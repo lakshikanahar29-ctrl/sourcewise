@@ -3,7 +3,7 @@ name: nightly-pipeline
 on:
   schedule:
     - cron: "30 20 * * *"   # 02:00 IST every day
-  workflow_dispatch: {}      # "Run workflow" button for manual runs
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -33,6 +33,16 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python dashboard/build.py
+      - name: Push results to HubSpot
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          HUBSPOT_TOKEN: ${{ secrets.HUBSPOT_TOKEN }}
+        run: |
+          if [ -n "$HUBSPOT_TOKEN" ]; then
+            python reverse_etl/hubspot_sync.py --live
+          else
+            echo "No HUBSPOT_TOKEN secret set, skipping the CRM sync"
+          fi
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site
