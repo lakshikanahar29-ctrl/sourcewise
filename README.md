@@ -22,6 +22,7 @@ generator (Python, seeded)  →  raw.* in Postgres  →  dbt: staging → identi
 | `dbt/models/staging` | Types, cleans and classifies each source. |
 | `dbt/models/intermediate` | Identity resolution (phone merge, cookie → person, Clay name + domain match), one unified touchpoint table, the 90-day deal window. |
 | `dbt/models/marts` | `fct_attribution` (long format), channel performance, model disagreement, funnel, velocity, retention, data quality, truth evaluation. |
+| `dashboard/` | `build.py` queries the marts into `site/data.json`; `index.html` is a dependency-free dashboard (5 tabs). Published to GitHub Pages only after all tests pass. |
 | `metrics/metrics.yml` | Definition, version and changelog for every number. |
 | `docs/incident_log.md` | What broke, how I found out, what I changed. |
 
@@ -50,17 +51,20 @@ pip install -r requirements.txt
 export DATABASE_URL=postgresql://user:password@localhost:5432/sourcewise
 python run_pipeline.py              # generate → load → dbt build (≈40s)
 python run_pipeline.py --skip-truth # faster: skips the counterfactual runs
+python dashboard/build.py && python -m http.server -d site 8000   # dashboard at localhost:8000
 ```
 
 ## Nightly run
 
-`.github/workflows/nightly.yml` runs the pipeline every day at 02:00 IST. Repository secrets needed:
-`DATABASE_URL` (Supabase connection string) and optionally `SLACK_WEBHOOK_URL`. Each run is recorded in `ops.pipeline_runs`.
+`.github/workflows/nightly.yml` runs the pipeline every day at 02:00 IST, then rebuilds the dashboard and publishes it to
+GitHub Pages. If any test fails, the publish step never runs and yesterday's dashboard stays up.
+Repository secrets: `DATABASE_URL` (Supabase session-pooler connection string) and optionally `SLACK_WEBHOOK_URL`.
+Each run is recorded in `ops.pipeline_runs`.
 
 ## Status
 
 - [x] Generator, loader, dbt models, 5 attribution models, tests, data quality, truth evaluation
 - [x] Pipeline runner, run log, Slack alert, nightly workflow file
-- [ ] Evidence.dev dashboard
+- [x] Dashboard on GitHub Pages (overview, channels, model disagreement, GTM systems, data health)
 - [ ] Reverse ETL to HubSpot
 - [ ] Write-up and Loom

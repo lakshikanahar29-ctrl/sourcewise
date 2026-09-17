@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sourcewise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef;
+  --card: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #7d7b74;
+  --line: #e2e0d9;
+  --line-2: #ecebe6;
+  --accent: #2a78d6;
+  --accent-soft: #cde2fb;
+  --over: #e34948;
+  --under: #2a78d6;
+  --range: #cfcdc5;
+  --good: #1f7a45;
+  --good-bg: #dcefe3;
+  --warn: #9a5b00;
+  --warn-bg: #fbe9c7;
+  --tab-active: #0b0b0b;
+  --tab-active-ink: #fcfcfb;
+  --seq-0: #f0efec; --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --card: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #95948b;
+    --line: #2f2f2c; --line-2: #262624; --accent: #3987e5; --accent-soft: #1c3350;
+    --over: #e66767; --under: #3987e5; --range: #4a4a46;
+    --good: #6fcf97; --good-bg: #1b3325; --warn: #f0b75a; --warn-bg: #3a2c12;
+    --tab-active: #ffffff; --tab-active-ink: #121211;
+    --seq-0: #242422; --seq-1: #0f2440; --seq-2: #16365f; --seq-3: #1c5cab; --seq-4: #2a78d6; --seq-5: #5598e7; --seq-6: #86b6ef;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --card: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #95948b;
+  --line: #2f2f2c; --line-2: #262624; --accent: #3987e5; --accent-soft: #1c3350;
+  --over: #e66767; --under: #3987e5; --range: #4a4a46;
+  --good: #6fcf97; --good-bg: #1b3325; --warn: #f0b75a; --warn-bg: #3a2c12;
+  --tab-active: #ffffff; --tab-active-ink: #121211;
+  --seq-0: #242422; --seq-1: #0f2440; --seq-2: #16365f; --seq-3: #1c5cab; --seq-4: #2a78d6; --seq-5: #5598e7; --seq-6: #86b6ef;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+header.top { padding-block: 28px 18px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; }
+.brand h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+.brand .q { color: var(--ink-2); font-size: 16px; margin: 0; text-wrap: balance; }
+.meta { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px 18px; font: 12.5px/1.4 var(--mono); color: var(--ink-3); }
+.badge { display: inline-flex; align-items: center; gap: 6px; font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 8px; border-radius: 4px; background: var(--warn-bg); color: var(--warn); }
+nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+nav.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; padding-block: 10px; }
+nav.tabs button { font: 500 14px/1 var(--sans); color: var(--ink-2); background: none; border: 0; padding: 9px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+nav.tabs button:hover { color: var(--ink); background: var(--line-2); }
+nav.tabs button[aria-selected="true"] { background: var(--tab-active); color: var(--tab-active-ink); }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+main { padding-block: 26px 60px; }
+section[hidden] { display: none !important; }
+.stack { display: grid; gap: 22px; }
+h2 { font-size: 20px; font-weight: 600; margin: 0 0 4px; text-wrap: balance; }
+h3 { font-size: 15px; font-weight: 600; margin: 0 0 2px; }
+.sub { color: var(--ink-2); margin: 0; max-width: 70ch; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+.tile .k { font: 500 11.5px/1.3 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.tile .v { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.tile .n { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.two { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 22px; }
+@media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+.findings { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.findings li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; }
+.findings .ix { font: 500 12px/26px var(--mono); color: var(--ink-3); border: 1px solid var(--line); border-radius: 50%; width: 26px; height: 26px; text-align: center; }
+.findings b { font-weight: 600; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 2px; background: var(--line-2); border-radius: 8px; padding: 3px; }
+.seg button { font: 500 13px/1 var(--sans); color: var(--ink-2); border: 0; background: none; padding: 8px 11px; border-radius: 6px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.bars { display: grid; gap: 6px; }
+.bar-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 64px; align-items: center; gap: 12px; font-size: 14px; }
+.bar-row .lbl { color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-row .track { position: relative; height: 22px; }
+.bar-row .fill { position: absolute; left: 0; top: 3px; bottom: 3px; background: var(--accent); border-radius: 0 4px 4px 0; min-width: 2px; }
+.bar-row .val { text-align: right; font: 13px/1 var(--mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.bar-row.group .lbl { color: var(--ink-2); }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+th { text-align: left; font: 500 11px/1.3 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 9px 10px; border-bottom: 1px solid var(--line-2); white-space: nowrap; }
+td.num, th.num { text-align: right; }
+tbody tr:hover td { background: var(--line-2); }
+.heat td.cell { text-align: center; font: 13px/1 var(--mono); border-left: 2px solid var(--card); }
+.heat td.truth { font-weight: 600; box-shadow: inset 2px 0 0 var(--ink); }
+.pill { display: inline-flex; align-items: center; gap: 5px; font: 500 12px/1 var(--mono); padding: 4px 8px; border-radius: 20px; }
+.pill.ok { background: var(--good-bg); color: var(--good); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.fail { background: var(--warn-bg); color: var(--over); }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--ink-3); font: 11px var(--mono); }
+.axis line { stroke: var(--line); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); margin-top: 10px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+.div-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 92px; gap: 12px; align-items: center; font-size: 14px; }
+.div-row .track { position: relative; height: 22px; }
+.div-row .mid { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--ink-3); }
+.div-row .fill { position: absolute; top: 4px; bottom: 4px; }
+.div-row .fill.over { background: var(--over); border-radius: 0 4px 4px 0; }
+.div-row .fill.under { background: var(--under); border-radius: 4px 0 0 4px; }
+.div-row .val { text-align: right; font: 13px/1 var(--mono); color: var(--ink-2); white-space: nowrap; }
+.range-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14px; }
+.range-row .track { position: relative; height: 30px; border-bottom: 1px dashed var(--line); }
+.range-row .span { position: absolute; top: 12px; height: 6px; background: var(--range); border-radius: 3px; }
+.range-row .dot { position: absolute; top: 9px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--card); }
+.range-row .mdot { position: absolute; top: 11px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px var(--card); }
+.note { font-size: 13px; color: var(--ink-2); border-left: 2px solid var(--line); padding-left: 12px; margin: 14px 0 0; max-width: 75ch; }
+details { border-top: 1px solid var(--line-2); padding-block: 10px; }
+details summary { cursor: pointer; font: 500 13px/1.4 var(--mono); color: var(--ink); }
+details p { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; max-width: 75ch; }
+details ul { margin: 6px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 13px; }
+.tip { position: fixed; z-index: 20; pointer-events: none; background: var(--ink); color: var(--card); font: 12.5px/1.4 var(--sans); padding: 7px 9px; border-radius: 6px; max-width: 260px; opacity: 0; transition: opacity .08s; }
+.tip b { font-weight: 600; }
+footer { border-top: 1px solid var(--line); padding-block: 20px 40px; font-size: 13px; color: var(--ink-3); }
+@media (max-width: 560px) {
+  .bar-row, .div-row, .range-row { grid-template-columns: 104px minmax(0, 1fr) 56px; gap: 8px; font-size: 13px; }
+  .range-row { grid-template-columns: 104px minmax(0, 1fr); }
+  .tile .v { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) { .tip { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <h1>Sourcewise</h1>
+      <p class="q">Which GTM source actually produces revenue, and how much does the answer depend on how you count?</p>
+    </div>
+    <div class="meta">
+      <span class="badge" title="All companies, people and revenue are generated">Synthetic data</span>
+      <span id="m-company"></span>
+      <span id="m-built"></span>
+      <span id="m-run"></span>
+    </div>
+  </div>
+</header>
+<nav class="tabs" aria-label="Dashboard sections">
+  <div class="wrap" role="tablist">
+    <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+    <button role="tab" data-tab="channels" aria-selected="false">Channels</button>
+    <button role="tab" data-tab="models" aria-selected="false">Model disagreement</button>
+    <button role="tab" data-tab="systems" aria-selected="false">Our GTM systems</button>
+    <button role="tab" data-tab="health" aria-selected="false">Data health</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <!-- OVERVIEW -->
+  <section id="overview" class="stack">
+    <div class="tiles" id="tiles"></div>
+    <div class="two">
+      <div class="card">
+        <div class="card-head"><div><h3>Won revenue by month</h3><p class="sub">Closed-won deal amount, by close month.</p></div></div>
+        <div class="chart" id="monthly"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>What the data says</h3><p class="sub">Recomputed on every run.</p></div></div>
+        <ol class="findings" id="findings"></ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHANNELS -->
+  <section id="channels" class="stack" hidden>
+    <div>
+      <h2>Revenue credit by channel</h2>
+      <p class="sub">Every won deal hands out exactly 100% credit, split across the touches in the 90 days before it was created. Pick how the split is done.</p>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h3 id="ch-title">Share of won revenue</h3>
+        <div class="seg" id="model-seg" role="group" aria-label="Attribution model"></div>
+      </div>
+      <div class="bars" id="ch-bars"></div>
+      <p class="note" id="ch-model-note"></p>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Channel table</h3></div>
+      <div class="scroll"><table id="ch-table"></table></div>
+      <p class="note">Spend comes from the ad platforms. Pipeline per $1 and cost per win are shown for paid channels only; multi-touch models give fractional wins.</p>
+    </div>
+  </section>
+
+  <!-- MODELS -->
+  <section id="models" class="stack" hidden>
+    <div>
+      <h2>Five models, five answers</h2>
+      <p class="sub">Each cell is a channel's share of won revenue under one model. The last column is the planted truth: how much revenue disappears when the generator switches that channel off.</p>
+    </div>
+    <div class="card">
+      <div class="scroll"><table class="heat" id="heat"></table></div>
+      <div class="legend" id="heat-legend"></div>
+    </div>
+    <div class="two">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Credit error against the truth</h3><p class="sub">Model share minus true share.</p></div>
+          <div class="seg" id="err-seg" role="group" aria-label="Attribution model"></div>
+        </div>
+        <div class="bars" id="err-bars"></div>
+        <div class="legend"><span><i style="background:var(--over)"></i>Over-credited</span><span><i style="background:var(--under)"></i>Under-credited</span></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Which model got closest</h3><p class="sub">Mean absolute error across channels, in percentage points.</p></div></div>
+        <div class="bars" id="mae-bars"></div>
+        <p class="note">Synthetic world: this tests how the models behave under known assumptions. It is not a claim about the real world.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYSTEMS -->
+  <section id="systems" class="stack" hidden>
+    <div>
+      <h2>Our GTM systems, measured</h2>
+      <p class="sub">The Signal Engine, Reply Bot and Voice Agent next to cold email and paid ads. The grey bar is the range of credit the five models give; the dark dot is the true share.</p>
+    </div>
+    <div class="card">
+      <div class="bars" id="sys-ranges"></div>
+      <div class="legend"><span><i style="background:var(--range)"></i>Range across 5 models</span><span><i style="background:var(--accent);border-radius:50%"></i>Each model</span><span><i style="background:var(--ink);border-radius:50%"></i>True share</span></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Deals started by each source</h3><p class="sub">Grouped by the first touch in the 90-day window.</p></div></div>
+      <div class="scroll"><table id="sys-table"></table></div>
+    </div>
+  </section>
+
+  <!-- HEALTH -->
+  <section id="health" class="stack" hidden>
+    <div>
+      <h2>Data health</h2>
+      <p class="sub">75 automated tests run before this page is published. If one fails, the run stops, Slack gets an alert, and yesterday's dashboard stays up.</p>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Checks</h3></div>
+      <div class="scroll"><table id="dq"></table></div>
+    </div>
+    <div class="two">
+      <div class="card">
+        <div class="card-head"><h3>Recent runs</h3></div>
+        <div class="scroll"><table id="runs"></table></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Retention by first touch</h3><p class="sub">Net and gross revenue retention of customers.</p></div></div>
+        <div class="scroll"><table id="ret"></table></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Metric definitions</h3><p class="sub">Versioned in <code>metrics/metrics.yml</code>.</p></div></div>
+      <div id="defs"></div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Built by Lakshika Nahar · Python, Postgres (Supabase), dbt Core, GitHub Actions · data is synthetic and regenerated nightly</div></footer>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const NAMES = {
+  linkedin_ads: "LinkedIn Ads", google_ads: "Google Ads", retargeting_ads: "Retargeting",
+  organic_search: "Organic search", organic_social: "Organic social", referral: "Referral",
+  direct: "Direct", other: "Other web", cold_email: "Cold email", signal_engine: "Signal Engine",
+  reply_bot: "Reply Bot", voice_agent: "Voice Agent", unattributed: "Unattributed"
+};
+const MODELS = ["first_touch", "last_non_direct", "linear", "w_shaped", "time_decay"];
+const MODEL_NAMES = { first_touch: "First touch", last_non_direct: "Last non-direct", linear: "Linear", w_shaped: "W-shaped", time_decay: "Time decay" };
+const MODEL_NOTES = {
+  first_touch: "100% to the first touch in the window.",
+  last_non_direct: "100% to the last touch that isn't a direct visit.",
+  linear: "Equal credit to every touch.",
+  w_shaped: "30% first touch, 30% lead-creation touch, 30% deal-creation touch, 10% shared by the rest.",
+  time_decay: "Touches closer to the deal count more (7-day half-life)."
+};
+const SYSTEMS = ["signal_engine", "reply_bot", "voice_agent", "cold_email", "linkedin_ads", "google_ads", "retargeting_ads"];
+const nm = c => NAMES[c] || c;
+const pct = (x, d = 1) => x == null ? "–" : (x * 100).toFixed(d) + "%";
+const pp = x => (x >= 0 ? "+" : "−") + Math.abs(x * 100).toFixed(1) + " pts";
+const usd = x => x == null ? "–" : x >= 1e6 ? "$" + (x / 1e6).toFixed(2) + "M" : x >= 1e3 ? "$" + Math.round(x / 1e3) + "K" : "$" + Math.round(x);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+const $ = id => document.getElementById(id);
+
+/* tooltip: any element with data-tip */
+const tip = $("tip");
+document.addEventListener("mousemove", e => {
+  const t = e.target.closest("[data-tip]");
+  if (!t) { tip.style.opacity = 0; return; }
+  tip.innerHTML = t.dataset.tip;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(e.clientX + 14, innerWidth - w - 8) + "px";
+  tip.style.top = Math.max(8, e.clientY - h - 12) + "px";
+  tip.style.opacity = 1;
+});
+
+/* tabs */
+function showTab(name) {
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name));
+  document.querySelectorAll("main > section").forEach(s => s.hidden = s.id !== name);
+  try { history.replaceState(null, "", "#" + name); } catch (e) {}
+}
+document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+addEventListener("hashchange", () => { const h = location.hash.slice(1); if (document.getElementById(h)) showTab(h); });
+
+function segmented(el, value, onChange) {
+  el.innerHTML = MODELS.map(m => `<button type="button" data-m="${m}" aria-pressed="${m === value}">${MODEL_NAMES[m]}</button>`).join("");
+  el.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    el.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    onChange(b.dataset.m);
+  });
+}
+
+function barRows(rows, max, cls = "") {
+  return rows.map(r => `<div class="bar-row ${cls}" data-tip="${esc(r.tip)}">
+      <span class="lbl">${esc(r.label)}</span>
+      <span class="track"><span class="fill" style="width:${Math.max(0, r.value / max * 100)}%"></span></span>
+      <span class="val">${esc(r.text)}</span></div>`).join("");
+}
+
+function render(D) {
+  const S = D.summary, meta = D.meta;
+  $("m-company").textContent = `${meta.company}: ${meta.pitch}`;
+  $("m-built").textContent = "Updated " + new Date(meta.built_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+  const lastRun = D.runs[0];
+  if (lastRun) $("m-run").textContent = `Run #${lastRun.run_id} · ${lastRun.status}`;
+
+  const q = Object.fromEntries(D.quality.map(r => [r.check_name, r]));
+  const winRate = S.closed ? S.won / S.closed : null;
+  $("tiles").innerHTML = [
+    ["Won revenue", usd(S.won_revenue_usd), `${S.won} deals won`],
+    ["Pipeline created", usd(S.pipeline_usd), `${S.opps} opportunities`],
+    ["Win rate", pct(winRate, 0), `of ${S.closed} closed deals`],
+    ["Unattributed revenue", pct(q.unattributed_won_revenue_share?.value, 1), "no known touch in 90 days"],
+  ].map(([k, v, n]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join("");
+
+  /* monthly won revenue (single series) */
+  const months = D.monthly.filter(m => m.won_revenue_usd > 0 || m.opps_created > 0);
+  const W = 640, H = 220, pl = 44, pb = 26, pt = 8;
+  const maxRev = Math.max(...months.map(m => m.won_revenue_usd), 1);
+  const step = Math.pow(10, Math.floor(Math.log10(maxRev)));
+  const niceMax = Math.ceil(maxRev / step) * step;
+  const bw = (W - pl) / months.length;
+  const ticks = [0, niceMax / 2, niceMax];
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Won revenue by month">`;
+  ticks.forEach(t => { const y = pt + (H - pt - pb) * (1 - t / niceMax); svg += `<g class="axis"><line x1="${pl}" x2="${W}" y1="${y}" y2="${y}"/></g><text x="${pl - 6}" y="${y + 4}" text-anchor="end">${usd(t)}</text>`; });
+  months.forEach((m, i) => {
+    const h = (H - pt - pb) * (m.won_revenue_usd / niceMax), x = pl + i * bw + 2, y = H - pb - h;
+    const label = new Date(m.month + "T00:00:00").toLocaleString(undefined, { month: "short", year: "2-digit" });
+    const tipTxt = `<b>${label}</b><br>${usd(m.won_revenue_usd)} won · ${m.deals_won} deals<br>${m.opps_created} opps created`;
+    svg += `<g data-tip="${esc(tipTxt)}"><rect x="${pl + i * bw}" y="${pt}" width="${bw}" height="${H - pt - pb}" fill="transparent"/>`;
+    if (h > 0) svg += `<path d="M${x},${H - pb} V${y + Math.min(4, h)} Q${x},${y} ${x + Math.min(4, (bw - 4) / 2)},${y} H${x + bw - 4 - Math.min(4, (bw - 4) / 2)} Q${x + bw - 4},${y} ${x + bw - 4},${y + Math.min(4, h)} V${H - pb} Z" fill="var(--accent)"/>`;
+    svg += `</g>`;
+    if (i % 3 === 0) svg += `<text x="${pl + i * bw + bw / 2}" y="${H - 8}" text-anchor="middle">${label}</text>`;
+  });
+  $("monthly").innerHTML = svg + "</svg>";
+
+  /* findings */
+  const truth = D.truth;
+  const trueShare = Object.fromEntries(truth.filter(r => r.model === "linear").map(r => [r.channel, r.true_share]));
+  const byModel = m => D.channels.filter(r => r.model === m);
+  const shareOf = (m, c) => (byModel(m).find(r => r.channel === c) || {}).share_of_won_revenue || 0;
+  const errs = truth.filter(r => r.model === "linear");
+  const over = [...errs].sort((a, b) => b.error - a.error)[0];
+  const under = [...errs].sort((a, b) => a.error - b.error)[0];
+  const maeByModel = MODELS.map(m => ({ m, mae: (truth.find(r => r.model === m) || {}).model_mean_abs_error })).sort((a, b) => a.mae - b.mae);
+  const swing = D.disagreement.filter(r => r.channel !== "unattributed")[0];
+  const swingVals = swing ? MODELS.map(m => ({ m, v: swing[m] || 0 })).sort((a, b) => a.v - b.v) : [];
+  const f = [];
+  if (over) f.push(`<b>${nm(over.channel)}</b> gets ${pct(over.model_share, 0)} of won revenue under a linear model, but its true share is ${pct(over.true_share, 0)}.` + (over.channel === "direct" ? " Demo requests land on direct visits, so direct collects credit it didn't earn." : ""));
+  if (swing) f.push(`The model you pick matters most for <b>${nm(swing.channel)}</b>: from ${pct(swingVals[0].v, 0)} (${MODEL_NAMES[swingVals[0].m]}) to ${pct(swingVals.at(-1).v, 0)} (${MODEL_NAMES[swingVals.at(-1).m]}).`);
+  if (under) f.push(`<b>${nm(under.channel)}</b> is under-credited: ${pct(under.model_share, 0)} under linear against a true ${pct(under.true_share, 0)}.`);
+  if (maeByModel[0]?.mae != null) f.push(`<b>${MODEL_NAMES[maeByModel[0].m]}</b> came closest to the truth on this data (average miss ${(maeByModel[0].mae * 100).toFixed(1)} pts); <b>${MODEL_NAMES[maeByModel.at(-1).m]}</b> missed most (${(maeByModel.at(-1).mae * 100).toFixed(1)} pts).`);
+  $("findings").innerHTML = f.map((t, i) => `<li><span class="ix">${i + 1}</span><span>${t}</span></li>`).join("");
+
+  /* channels */
+  function drawChannels(m) {
+    const rows = byModel(m).filter(r => r.won_revenue_usd > 0 || r.pipeline_usd > 0).sort((a, b) => b.share_of_won_revenue - a.share_of_won_revenue);
+    const max = Math.max(...rows.map(r => r.share_of_won_revenue), 0.01);
+    $("ch-title").textContent = `Share of won revenue · ${MODEL_NAMES[m]}`;
+    $("ch-bars").innerHTML = barRows(rows.map(r => ({
+      label: nm(r.channel), value: r.share_of_won_revenue, text: pct(r.share_of_won_revenue),
+      tip: `<b>${nm(r.channel)}</b><br>${usd(r.won_revenue_usd)} won revenue<br>${usd(r.pipeline_usd)} pipeline` + (trueShare[r.channel] != null ? `<br>True share ${pct(trueShare[r.channel])}` : "")
+    })), max);
+    $("ch-model-note").textContent = MODEL_NOTES[m];
+    $("ch-table").innerHTML = `<thead><tr><th>Channel</th><th class="num">Won revenue</th><th class="num">Pipeline</th><th class="num">Credited wins</th><th class="num">Spend</th><th class="num">Pipeline per $1</th><th class="num">Cost per win</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${nm(r.channel)}</td><td class="num">${usd(r.won_revenue_usd)}</td><td class="num">${usd(r.pipeline_usd)}</td><td class="num">${(r.credited_wins || 0).toFixed(1)}</td><td class="num">${r.spend_usd ? usd(r.spend_usd) : "–"}</td><td class="num">${r.pipeline_per_dollar ? "$" + r.pipeline_per_dollar.toFixed(2) : "–"}</td><td class="num">${r.cost_per_credited_win ? usd(r.cost_per_credited_win) : "–"}</td></tr>`).join("") + "</tbody>";
+  }
+  segmented($("model-seg"), "linear", drawChannels);
+  drawChannels("linear");
+
+  /* heatmap */
+  const heatRows = D.disagreement.filter(r => r.channel !== "organic_social" || MODELS.some(m => r[m] > 0));
+  const allVals = heatRows.flatMap(r => MODELS.map(m => r[m] || 0)).concat(Object.values(trueShare));
+  const hmax = Math.max(...allVals, 0.01);
+  const seq = v => { const k = Math.min(6, Math.floor(v / hmax * 6.999)); return { bg: `var(--seq-${k})`, ink: k >= 4 ? "#ffffff" : "var(--ink)" }; };
+  const cell = (v, extra = "", tipTxt = "") => { const s = seq(v); return `<td class="cell ${extra}" style="background:${s.bg};color:${s.ink}" data-tip="${esc(tipTxt)}">${pct(v, 0)}</td>`; };
+  $("heat").innerHTML = `<thead><tr><th>Channel</th>${MODELS.map(m => `<th class="num" style="text-align:center">${MODEL_NAMES[m]}</th>`).join("")}<th style="text-align:center">True share</th><th class="num">Swing</th></tr></thead><tbody>` +
+    heatRows.map(r => `<tr><td>${nm(r.channel)}</td>${MODELS.map(m => cell(r[m] || 0, "", `<b>${nm(r.channel)}</b> · ${MODEL_NAMES[m]}<br>${pct(r[m] || 0)} of won revenue`)).join("")}` +
+      (trueShare[r.channel] != null ? cell(trueShare[r.channel], "truth", `<b>${nm(r.channel)}</b><br>True incremental share ${pct(trueShare[r.channel])}`) : `<td class="cell" style="color:var(--ink-3)" data-tip="Not a real channel in the simulation: it only exists because of misclassified or untracked touches">n/a</td>`) +
+      `<td class="num">${(r.swing * 100).toFixed(0)} pts</td></tr>`).join("") + "</tbody>";
+  $("heat-legend").innerHTML = `<span>Lower share</span>` + [0, 1, 2, 3, 4, 5, 6].map(k => `<i style="background:var(--seq-${k});margin:0"></i>`).join("") + `<span>Higher share</span><span style="margin-left:12px">Swing = highest minus lowest share across the five models</span>`;
+
+  /* error vs truth */
+  function drawErr(m) {
+    const rows = truth.filter(r => r.model === m).sort((a, b) => b.error - a.error);
+    const lim = Math.max(...truth.map(r => Math.abs(r.error)), 0.05);
+    $("err-bars").innerHTML = rows.map(r => {
+      const w = Math.abs(r.error) / lim * 50;
+      const side = r.error >= 0 ? `left:50%;width:${w}%` : `left:${50 - w}%;width:${w}%`;
+      return `<div class="div-row" data-tip="${esc(`<b>${nm(r.channel)}</b> · ${MODEL_NAMES[m]}<br>Model ${pct(r.model_share)} vs true ${pct(r.true_share)}`)}">
+        <span class="lbl">${nm(r.channel)}</span><span class="track"><span class="mid"></span><span class="fill ${r.error >= 0 ? "over" : "under"}" style="${side}"></span></span><span class="val">${pp(r.error)}</span></div>`;
+    }).join("");
+  }
+  segmented($("err-seg"), "linear", drawErr);
+  drawErr("linear");
+  const maxMae = Math.max(...maeByModel.map(x => x.mae || 0), 0.01);
+  $("mae-bars").innerHTML = barRows(maeByModel.map((x, i) => ({ label: MODEL_NAMES[x.m], value: x.mae, text: (x.mae * 100).toFixed(1) + " pts", tip: `<b>${MODEL_NAMES[x.m]}</b><br>Rank ${i + 1} of 5` })), maxMae);
+
+  /* systems: range strip */
+  const sysRows = SYSTEMS.map(c => {
+    const vals = MODELS.map(m => ({ m, v: shareOf(m, c) }));
+    return { c, vals, lo: Math.min(...vals.map(x => x.v)), hi: Math.max(...vals.map(x => x.v)), t: trueShare[c] };
+  });
+  const smax = Math.max(...sysRows.flatMap(r => [r.hi, r.t || 0]), 0.05) * 1.08;
+  $("sys-ranges").innerHTML = sysRows.map(r => `<div class="range-row"><span class="lbl">${nm(r.c)}</span><span class="track">
+      <span class="span" style="left:${r.lo / smax * 100}%;width:${Math.max(0.6, (r.hi - r.lo) / smax * 100)}%"></span>
+      ${r.vals.map(x => `<span class="mdot" style="left:${x.v / smax * 100}%" data-tip="${esc(`<b>${nm(r.c)}</b> · ${MODEL_NAMES[x.m]}<br>${pct(x.v)} of won revenue`)}"></span>`).join("")}
+      ${r.t != null ? `<span class="dot" style="left:${r.t / smax * 100}%" data-tip="${esc(`<b>${nm(r.c)}</b><br>True share ${pct(r.t)}`)}"></span>` : ""}
+    </span></div>`).join("") +
+    `<div class="range-row"><span></span><span style="display:flex;justify-content:space-between;font:11px var(--mono);color:var(--ink-3)"><span>0%</span><span>${pct(smax / 2, 0)}</span><span>${pct(smax, 0)}</span></span></div>`;
+  const vel = Object.fromEntries(D.velocity.map(r => [r.first_touch_channel, r]));
+  $("sys-table").innerHTML = `<thead><tr><th>First touch</th><th class="num">Deals</th><th class="num">Won</th><th class="num">Win rate</th><th class="num">Avg won deal</th><th class="num">Median days to win</th><th class="num">True share</th></tr></thead><tbody>` +
+    SYSTEMS.map(c => { const v = vel[c] || {}; return `<tr><td>${nm(c)}</td><td class="num">${v.opps ?? 0}</td><td class="num">${v.won_opps ?? 0}</td><td class="num">${pct(v.win_rate, 0)}</td><td class="num">${usd(v.avg_won_deal_usd)}</td><td class="num">${v.median_cycle_days_won ?? "–"}</td><td class="num">${pct(trueShare[c])}</td></tr>`; }).join("") + "</tbody>";
+
+  /* health */
+  const fmtVal = r => r.direction === "info" || r.value > 1 ? Math.round(r.value) : pct(r.value, 1);
+  $("dq").innerHTML = `<thead><tr><th>Status</th><th>Check</th><th class="num">Value</th><th class="num">Threshold</th></tr></thead><tbody>` +
+    D.quality.map(r => `<tr><td><span class="pill ${r.status === "ok" ? "ok" : "warn"}">${r.status === "ok" ? "✓ OK" : "! Warn"}</span></td><td style="white-space:normal">${esc(r.description)}</td><td class="num">${fmtVal(r)}</td><td class="num">${r.threshold == null ? "–" : (r.direction === "min" ? "≥ " : "≤ ") + (r.threshold > 1 ? r.threshold : pct(r.threshold, 0))}</td></tr>`).join("") + "</tbody>";
+  $("runs").innerHTML = `<thead><tr><th>Run</th><th>Started</th><th>Status</th><th>Tests</th></tr></thead><tbody>` +
+    (D.runs.length ? D.runs.map(r => { const s = typeof r.summary === "string" ? JSON.parse(r.summary) : (r.summary || {}); const pass = /PASS=(\d+)/.exec(s.dbt || ""); const err = /ERROR=(\d+)/.exec(s.dbt || "");
+      return `<tr><td>#${r.run_id}</td><td>${new Date(r.started_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</td><td><span class="pill ${r.status === "success" ? "ok" : "fail"}">${r.status === "success" ? "✓ Success" : "✕ Failed"}</span></td><td>${pass ? pass[1] + " passed" : "–"}${err && +err[1] ? ", " + err[1] + " failed" : ""}</td></tr>`; }).join("") : `<tr><td colspan="4">No runs recorded yet.</td></tr>`) + "</tbody>";
+  $("ret").innerHTML = `<thead><tr><th>First touch</th><th class="num">Customers</th><th class="num">NRR</th><th class="num">GRR</th></tr></thead><tbody>` +
+    D.retention.map(r => `<tr${r.first_touch_channel === "all_customers" ? ' style="font-weight:600"' : ""}><td>${r.first_touch_channel === "all_customers" ? "All customers" : nm(r.first_touch_channel)}</td><td class="num">${r.customers}</td><td class="num">${pct(r.net_revenue_retention, 0)}</td><td class="num">${pct(r.gross_revenue_retention, 0)}</td></tr>`).join("") + "</tbody>";
+  $("defs").innerHTML = D.metrics.map(m => `<details><summary>${esc(m.name)} · v${m.version}</summary><p>${esc(m.definition)}</p>${m.changelog ? `<ul>${m.changelog.map(c => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}${m.note ? `<p>${esc(m.note)}</p>` : ""}</details>`).join("");
+
+  const h = location.hash.slice(1);
+  if (["overview", "channels", "models", "systems", "health"].includes(h)) showTab(h);
+}
+
+fetch("data.json", { cache: "no-store" })
+  .then(r => { if (!r.ok) throw new Error("data.json not found (" + r.status + ")"); return r.json(); })
+  .then(render)
+  .catch(err => { document.querySelector("main").innerHTML = `<div class="card"><h3>Data not available</h3><p class="sub">${esc(err.message)}. The dashboard is published by the nightly pipeline; run it once from GitHub Actions.</p></div>`; });
+</script>
+</body>
+</html>
