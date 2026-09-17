@@ -1,0 +1,13 @@
+sourcewise:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('SW_DB_HOST', 'localhost') }}"
+      port: "{{ env_var('SW_DB_PORT', '5432') | int }}"
+      user: "{{ env_var('SW_DB_USER', 'sourcewise') }}"
+      password: "{{ env_var('SW_DB_PASSWORD', 'sourcewise') }}"
+      dbname: "{{ env_var('SW_DB_NAME', 'sourcewise') }}"
+      schema: analytics
+      sslmode: "{{ env_var('SW_DB_SSLMODE', 'prefer') }}"
+      threads: 4

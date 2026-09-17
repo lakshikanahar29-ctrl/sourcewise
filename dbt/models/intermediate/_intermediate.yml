@@ -1,0 +1,28 @@
+version: 2
+models:
+  - name: int_identity__contacts
+    columns:
+      - name: contact_id
+        tests: [unique, not_null]
+  - name: int_identity__email_map
+    columns:
+      - name: email
+        tests: [unique, not_null]
+  - name: int_identity__client_map
+    columns:
+      - name: client_id
+        tests: [unique, not_null]
+  - name: int_touchpoints
+    columns:
+      - name: touchpoint_id
+        tests: [unique, not_null]
+      - name: company_id
+        tests: [not_null]
+      - name: channel
+        tests:
+          - relationships:
+              arguments: {to: ref('dim_channel'), field: channel}
+  - name: int_opportunities
+    columns:
+      - name: deal_id
+        tests: [unique, not_null]

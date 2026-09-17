@@ -1,0 +1,92 @@
+# Sourcewise world config: every assumption behind the synthetic data lives here.
+# Change a number, re-run the generator, and the whole world changes with it.
+# NOTE: `true_lift` values are the PLANTED GROUND TRUTH. The dbt models never read them.
+
+company:
+  name: Quillstack
+  pitch: AI contract review for mid-market legal and ops teams
+  currency: USD
+
+seed: 20260917
+history_start: "2025-03-17"   # 18 months of history up to end_date
+end_date: today                # "today" or YYYY-MM-DD. Nightly runs extend the world by a day.
+truth_replicates: 12             # replicate worlds used to estimate each channel's true effect
+
+accounts: 600
+contacts_per_account: [2, 6]   # min, max (inclusive)
+second_device_share: 0.30      # people who browse on two devices (half their sessions never stitch)
+personal_email_dup_share: 0.06 # people who also exist in the CRM under a personal gmail
+
+intent:
+  half_life_days: 30           # how fast buying intent fades
+  dark_funnel_daily_p: 0.0025  # unobserved intent spikes (podcasts, peers, a bad audit)
+  dark_funnel_lift: 0.6
+
+# Daily exposure probability per person and the hidden effect of each touch on intent.
+channels:
+  linkedin_ads:    {p_base: 0.0011, p_intent: 0.0,    true_lift: 0.25, utm_missing: 0.25}
+  google_ads:      {p_base: 0.0003, p_intent: 0.0060, true_lift: 0.30, utm_missing: 0.05}
+  retargeting_ads: {p_recent_visitor: 0.035,          true_lift: 0.02, utm_missing: 0.30}
+  organic_search:  {p_base: 0.0004, p_intent: 0.0040, true_lift: 0.30}
+  direct:          {p_base: 0.0001, p_intent: 0.0040, true_lift: 0.00}
+  referral:        {p_base: 0.00012,p_intent: 0.0,    true_lift: 1.10}
+  cold_email:
+    p_enroll: 0.0012
+    step_offsets_days: [0, 3, 7, 12]
+    p_open: 0.45
+    p_click: 0.015
+    p_reply: 0.030
+    p_positive: 0.35
+    true_lift_click: 0.25
+    true_lift_reply_positive: 0.90
+    true_lift_reply_negative: 0.02
+  signal_engine:
+    p_base: 0.00015
+    p_intent: 0.0025
+    true_lift_detect: 0.20
+    step_offsets_days: [1, 4, 9]
+    p_reply: 0.10
+    p_positive: 0.55
+    true_lift_reply_positive: 1.40
+    email_missing: 0.20
+  reply_bot:
+    p_handles_positive_reply: 0.92
+    true_lift: 0.60
+  voice_agent:
+    p_calls_new_lead: 0.75
+    true_lift: 0.20
+
+funnel:
+  form_fill_p_base: 0.0003
+  form_fill_p_intent: 0.012
+  lead_stale_after_days: 90
+  meeting_p_base: 0.002
+  meeting_p_intent: 0.050
+  offline_meeting_p: 0.00004     # meetings from events/intros with no digital trail
+  qualify_p_base: 0.25
+  qualify_p_fit: 0.50
+  qualify_p_max: 0.85
+  win_p_base: 0.24
+  win_p_intent: 0.35
+  win_p_max: 0.70
+  cycle_days_min: 25
+  cycle_days_spread: 70
+  lost_cooldown_days: 90
+  deal_amount_median_by_size: {small: 9000, mid: 22000, large: 48000}
+  deal_amount_sigma: 0.35
+
+paid_media:
+  cpc_usd: {linkedin_ads: 9.0, google_ads: 6.0, retargeting_ads: 2.5}
+  junk_clicks_per_day: {linkedin_ads: 6, google_ads: 10, retargeting_ads: 8}
+  linkedin_utm_rename_date: "2026-01-01"   # utm_source 'linkedin' becomes 'linkedin_ads'
+  signal_campaign_rename_date: "2026-02-01" # 'clay_signal_*' campaigns become 'sig_*'
+
+data_mess:
+  deal_missing_contact_share: 0.07
+  deal_stage_skip_share: 0.20
+  lost_then_reopened_share: 0.08   # a lost deal re-opened and won later (same deal id)
+
+retention:
+  monthly_churn_p: 0.012
+  monthly_expansion_p: 0.020
+  monthly_contraction_p: 0.008

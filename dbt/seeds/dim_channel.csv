@@ -1,0 +1,14 @@
+channel,channel_group,is_direct,description
+linkedin_ads,paid,false,LinkedIn sponsored content clicks (UTM-tagged)
+google_ads,paid,false,Google search ads clicks (UTM-tagged)
+retargeting_ads,paid,false,AdRoll display retargeting clicks
+organic_search,organic,false,Unpaid search visits (includes Google Ads clicks that lost their UTMs)
+organic_social,organic,false,LinkedIn referrals without UTMs (mostly untagged LinkedIn Ads)
+referral,organic,false,Review sites and partners
+direct,direct,true,No UTM and no referrer
+other,direct,true,Unclassified web traffic
+cold_email,outbound,false,Smartlead cold sequences: clicks and replies
+signal_engine,gtm_system,false,Clay signal engine: post engagement detected + signal-sequence replies
+reply_bot,gtm_system,false,Master Reply Bot answered an interested reply
+voice_agent,gtm_system,false,AI voice agent called a new lead
+unattributed,none,true,Won or open deal with no known touch inside the lookback window

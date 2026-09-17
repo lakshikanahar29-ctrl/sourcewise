@@ -1,0 +1,24 @@
+version: 2
+sources:
+  - name: raw
+    description: Untouched exports, every column loaded as text.
+    tables:
+      - name: hubspot_companies
+      - name: hubspot_contacts
+      - name: hubspot_deals
+      - name: hubspot_deal_stage_history
+      - name: ga4_sessions
+      - name: ga4_form_fills
+      - name: linkedin_ads_daily
+      - name: google_ads_daily
+      - name: adroll_daily
+      - name: smartlead_email_events
+      - name: clay_signal_leads
+      - name: reply_bot_threads
+      - name: voice_agent_calls
+      - name: stripe_subscriptions
+      - name: stripe_subscription_events
+  - name: truth
+    description: Planted ground truth from the generator. Only read by mart_truth_evaluation.
+    tables:
+      - name: channel_incrementality

@@ -1,0 +1,48 @@
+version: 2
+models:
+  - name: stg_hubspot__companies
+    columns:
+      - name: company_id
+        tests: [unique, not_null]
+      - name: domain
+        tests: [unique, not_null]
+  - name: stg_hubspot__contacts
+    columns:
+      - name: contact_id
+        tests: [unique, not_null]
+      - name: email
+        tests: [not_null]
+  - name: stg_hubspot__deals
+    columns:
+      - name: deal_id
+        tests: [unique, not_null]
+      - name: amount
+        tests: [not_null]
+      - name: company_id
+        tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('stg_hubspot__companies'), field: company_id}
+      - name: current_stage
+        tests:
+          - accepted_values:
+              arguments:
+                values: [appointmentscheduled, qualifiedtobuy, presentationscheduled, decisionmakerboughtin, contractsent, closedwon, closedlost]
+  - name: stg_ga4__sessions
+    columns:
+      - name: session_id
+        tests: [unique, not_null]
+      - name: channel
+        tests:
+          - relationships:
+              arguments: {to: ref('dim_channel'), field: channel}
+  - name: stg_smartlead__email_events
+    columns:
+      - name: event_type
+        tests:
+          - accepted_values:
+              arguments: {values: [sent, open, click, reply]}
+  - name: stg_voice_agent__calls
+    columns:
+      - name: call_id
+        tests: [unique, not_null]

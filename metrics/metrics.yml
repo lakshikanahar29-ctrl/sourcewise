@@ -1,0 +1,75 @@
+# Every number shown on the dashboard is defined here. Change a definition -> bump version + add a changelog line.
+metrics:
+  - name: won_revenue_by_model
+    definition: Sum of closed-won deal amount, split across channels by the selected attribution model.
+    sql_ref: marts.mart_channel_summary.won_revenue_usd
+    grain: model, channel
+    version: 2
+    changelog:
+      - "v1: counted a deal as lost if its history ever contained closedlost."
+      - "v2: won/lost comes from the CURRENT stage. Deals marked lost then re-opened and won were being counted twice (see mart_data_quality.reopened_won_deals)."
+
+  - name: pipeline_by_model
+    definition: Sum of amount for all deals created (open, won and lost), split by attribution model.
+    sql_ref: marts.mart_channel_summary.pipeline_usd
+    grain: model, channel
+    version: 1
+
+  - name: share_of_won_revenue
+    definition: A channel's credited won revenue divided by all won revenue under the same model. Includes 'unattributed'.
+    sql_ref: marts.mart_channel_summary.share_of_won_revenue
+    version: 1
+
+  - name: pipeline_per_dollar
+    definition: Credited pipeline divided by ad-platform spend for the same channel, all time. Paid channels only.
+    sql_ref: marts.mart_channel_summary.pipeline_per_dollar
+    version: 1
+
+  - name: cost_per_credited_win
+    definition: Ad spend divided by credited wins (fractional under multi-touch models).
+    sql_ref: marts.mart_channel_summary.cost_per_credited_win
+    version: 1
+
+  - name: model_swing
+    definition: Largest minus smallest share of won revenue a channel gets across the five models.
+    sql_ref: marts.mart_model_disagreement.swing
+    version: 1
+
+  - name: win_rate
+    definition: Won deals / (won + lost deals) closed in the period. Open deals excluded.
+    sql_ref: marts.mart_funnel_monthly.win_rate
+    version: 1
+
+  - name: median_cycle_days_won
+    definition: Median days from deal created to closed-won, by first-touch channel.
+    sql_ref: marts.mart_velocity.median_cycle_days_won
+    version: 1
+
+  - name: new_leads
+    definition: People whose FIRST demo-form fill or interested email reply happened in the month.
+    sql_ref: marts.mart_funnel_monthly.new_leads
+    version: 1
+
+  - name: net_revenue_retention
+    definition: Current MRR / starting MRR for customers, grouped by first-touch channel of the winning deal.
+    sql_ref: marts.mart_retention.net_revenue_retention
+    version: 1
+
+  - name: gross_revenue_retention
+    definition: Sum of min(current MRR, starting MRR) / starting MRR. Expansion never counts.
+    sql_ref: marts.mart_retention.gross_revenue_retention
+    version: 2
+    changelog:
+      - "v1: (start - contraction - churn) / start went negative when a customer expanded then churned."
+      - "v2: cap each customer at their starting MRR."
+
+  - name: unattributed_won_revenue_share
+    definition: Won revenue from deals with no known touch in the 90-day lookback window / all won revenue.
+    sql_ref: marts.mart_data_quality (check_name = unattributed_won_revenue_share)
+    version: 1
+
+  - name: model_mean_abs_error
+    definition: Mean absolute gap between a model's channel shares and the planted true incremental shares.
+    sql_ref: marts.mart_truth_evaluation.model_mean_abs_error
+    version: 1
+    note: Synthetic data only. Tests model behaviour under known assumptions; not a claim about the real world.

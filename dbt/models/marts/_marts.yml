@@ -1,0 +1,23 @@
+version: 2
+models:
+  - name: fct_attribution
+    description: One row per deal x model x touch. Credit per deal per model sums to 1.
+    columns:
+      - name: attribution_id
+        tests: [unique, not_null]
+      - name: model
+        tests:
+          - accepted_values:
+              arguments: {values: [first_touch, last_non_direct, linear, w_shaped, time_decay]}
+      - name: channel
+        tests:
+          - relationships:
+              arguments: {to: ref('dim_channel'), field: channel}
+  - name: fct_opportunities
+    columns:
+      - name: deal_id
+        tests: [unique, not_null]
+  - name: mart_data_quality
+    columns:
+      - name: check_name
+        tests: [unique]

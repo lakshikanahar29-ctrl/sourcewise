@@ -1,0 +1,30 @@
+name: sourcewise
+version: "1.0.0"
+config-version: 2
+profile: sourcewise
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+vars:
+  lookback_days: 90          # touches older than this before a deal was created get no credit
+  time_decay_half_life_days: 7
+  w_shaped_anchor_weight: 0.30
+
+models:
+  sourcewise:
+    staging:
+      +schema: staging
+      +materialized: view
+    intermediate:
+      +schema: intermediate
+      +materialized: table
+    marts:
+      +schema: marts
+      +materialized: table
+
+seeds:
+  sourcewise:
+    +schema: reference
