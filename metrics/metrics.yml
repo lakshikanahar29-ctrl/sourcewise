@@ -73,3 +73,16 @@ metrics:
     sql_ref: marts.mart_truth_evaluation.model_mean_abs_error
     version: 1
     note: Synthetic data only. Tests model behaviour under known assumptions; not a claim about the real world.
+
+  - name: sourcewise_attributed_pipeline
+    definition: W-shaped credited pipeline for all deals at a company, written to the HubSpot company record.
+    sql_ref: reverse_etl/hubspot_sync.py (SQL)
+    grain: company
+    version: 1
+
+  - name: sourcewise_source_quality_score
+    definition: 0-100 score for the channel that first touched the account. 60% its win rate, 40% its W-shaped won revenue, each ranked across channels.
+    sql_ref: reverse_etl/hubspot_sync.py (channel_score)
+    grain: channel, applied per company
+    version: 1
+    note: A prioritisation score, not a prediction. Synthetic data.
