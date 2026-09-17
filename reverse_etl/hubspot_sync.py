@@ -106,7 +106,7 @@ def ensure_properties(token, live):
 
 
 def read_existing(token, domains):
-    """Current values in HubSpot, keyed by domain, for the companies that already exist."""
+    """Current record id + values in HubSpot, keyed by domain, for companies that already exist."""
     out = {}
     props = [p["name"] for p in PROPERTIES]
     for i in range(0, len(domains), 100):
@@ -116,8 +116,8 @@ def read_existing(token, domains):
             "properties": ["domain"] + props, "limit": 100})
         for r in res.get("results", []):
             d = (r["properties"].get("domain") or "").lower()
-            if d:
-                out[d] = {k: r["properties"].get(k) for k in props}
+            if d and d not in out:  # first record wins if a domain is duplicated in the CRM
+                out[d] = {"id": r["id"], **{k: r["properties"].get(k) for k in props}}
     return out
 
 
@@ -127,6 +127,14 @@ def changed(row, current):
     return (current.get("sourcewise_first_touch_channel") != row["first_touch_channel"]
             or str(current.get("sourcewise_attributed_pipeline") or "") not in (str(row["attributed_pipeline"]), str(float(row["attributed_pipeline"])))
             or str(current.get("sourcewise_source_quality_score") or "") not in (str(row["source_quality_score"]), str(float(row["source_quality_score"]))))
+
+
+def sw_props(r):
+    return {
+        "sourcewise_first_touch_channel": r["first_touch_channel"],
+        "sourcewise_attributed_pipeline": r["attributed_pipeline"],
+        "sourcewise_source_quality_score": r["source_quality_score"],
+    }
 
 
 def log_writes(url, rows, live):
@@ -175,25 +183,28 @@ def main():
         log_writes(url, todo, live=False)
         return
 
+    # HubSpot only allows upsert-by-property when that property is unique in the portal, and
+    # `domain` is not. So: update the companies that already exist by their record id, and
+    # create the rest. Matching still happens on domain, so re-runs never duplicate.
+    updates = [r for r in todo if r["domain"] in current]
+    creates = [r for r in todo if r["domain"] not in current]
     written = 0
-    for i in range(0, len(todo), 100):
-        chunk = todo[i:i + 100]
-        api(token, "POST", "/crm/v3/objects/companies/batch/upsert", {
-            "inputs": [{
-                "idProperty": "domain",
-                "id": r["domain"],
-                "properties": {
-                    "domain": r["domain"],
-                    "name": r["company_name"],
-                    "sourcewise_first_touch_channel": r["first_touch_channel"],
-                    "sourcewise_attributed_pipeline": r["attributed_pipeline"],
-                    "sourcewise_source_quality_score": r["source_quality_score"],
-                },
-            } for r in chunk]})
+    for i in range(0, len(updates), 100):
+        chunk = updates[i:i + 100]
+        api(token, "POST", "/crm/v3/objects/companies/batch/update", {
+            "inputs": [{"id": current[r["domain"]]["id"], "properties": sw_props(r)} for r in chunk]})
         written += len(chunk)
-        print(f"  upserted {written}/{len(todo)}")
+        print(f"  updated {written}/{len(updates)}")
+    made = 0
+    for i in range(0, len(creates), 100):
+        chunk = creates[i:i + 100]
+        api(token, "POST", "/crm/v3/objects/companies/batch/create", {
+            "inputs": [{"properties": {"domain": r["domain"], "name": r["company_name"], **sw_props(r)}} for r in chunk]})
+        made += len(chunk)
+        print(f"  created {made}/{len(creates)}")
+    written += made
     log_writes(url, todo, live=True)
-    print(f"Done: {written} companies updated in HubSpot.")
+    print(f"Done: {len(updates)} companies updated, {made} created in HubSpot.")
 
 
 if __name__ == "__main__":
