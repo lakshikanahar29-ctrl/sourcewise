@@ -5,13 +5,20 @@ on:
     - cron: "30 20 * * *"   # 02:00 IST every day
   workflow_dispatch: {}      # "Run workflow" button for manual runs
 
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-pipeline
+  cancel-in-progress: false
+
 jobs:
   run:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: pip
@@ -21,3 +28,24 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python run_pipeline.py
+      # Only reached when every test passed: a broken number never gets published.
+      - name: Build dashboard
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python dashboard/build.py
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: run
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
