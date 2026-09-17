@@ -3,6 +3,16 @@
 Real problems hit while building and running Sourcewise. Newest first.
 Format: date · what broke · how I found out · fix · what now prevents it.
 
+## 2026-09-17 · First live HubSpot sync failed: 400 VALIDATION_ERROR
+- **What broke:** `POST /crm/v3/objects/companies/batch/upsert` returned
+  *"Unable to perform update/upsert by non-unique 0-2 property domain"*. HubSpot only allows
+  upsert keyed on a property marked unique in that portal, and `domain` is not one.
+- **How I found out:** The nightly run failed at the "Push results to HubSpot" step. The dashboard
+  deploy was skipped, so the published page stayed on the previous good version.
+- **Fix:** Look the companies up by domain first, then `batch/update` the ones that exist (by record
+  id) and `batch/create` the rest. Matching still happens on domain, so re-runs stay idempotent.
+- **Prevention:** The update/create split is covered by a test with a stubbed HubSpot API.
+
 ## 2026-09-17 · Second pipeline run failed at the load step
 - **What broke:** The loader drops and recreates each raw table. On the second run Postgres refused:
   `cannot drop table raw.adroll_daily because other objects depend on it` — the dbt staging views sit on the raw tables.
