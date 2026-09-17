@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 660" width="1240" height="660" font-family="'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7d7b74"/>
+    </marker>
+    <marker id="arrowDark" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b0b0b"/>
+    </marker>
+  </defs>
+
+  <rect width="1240" height="660" fill="#f4f3ef"/>
+
+  <text x="40" y="52" font-size="26" font-weight="600" fill="#0b0b0b">Sourcewise: how a touch becomes credited revenue</text>
+  <text x="40" y="78" font-size="14.5" fill="#52514e">Synthetic B2B SaaS world (Quillstack) · everything below runs unattended every night at 02:00 IST</text>
+
+  <!-- column 1: sources -->
+  <rect x="40" y="110" width="250" height="338" rx="10" fill="#fcfcfb" stroke="#e2e0d9"/>
+  <text x="58" y="136" font-size="11" font-weight="500" letter-spacing="1" fill="#7d7b74" font-family="'IBM Plex Mono', monospace">1 · SOURCES (GENERATED)</text>
+  <g font-size="13.5" fill="#0b0b0b">
+    <text x="58" y="164">LinkedIn Ads · Google Ads (micros)</text>
+    <text x="58" y="190">AdRoll retargeting</text>
+    <text x="58" y="216">GA4 sessions + demo forms</text>
+    <text x="58" y="242">Smartlead cold email events</text>
+    <text x="58" y="268">Clay Signal Engine</text>
+    <text x="58" y="294">Reply Bot threads</text>
+    <text x="58" y="320">Voice Agent calls (IST, no tz)</text>
+    <text x="58" y="346">HubSpot companies / contacts / deals</text>
+    <text x="58" y="372">Stripe subscriptions</text>
+  </g>
+  <text x="58" y="400" font-size="12" fill="#9a5b00">Mess on purpose: missing UTMs,</text>
+  <text x="58" y="416" font-size="12" fill="#9a5b00">gmail duplicates, skipped and</text>
+  <text x="58" y="432" font-size="12" fill="#9a5b00">re-opened stages, renamed channel</text>
+
+  <!-- column 2: warehouse -->
+  <rect x="330" y="110" width="270" height="318" rx="10" fill="#fcfcfb" stroke="#e2e0d9"/>
+  <text x="348" y="136" font-size="11" font-weight="500" letter-spacing="1" fill="#7d7b74" font-family="'IBM Plex Mono', monospace">2 · WAREHOUSE (SUPABASE)</text>
+  <rect x="348" y="152" width="234" height="52" rx="7" fill="#f0efec"/>
+  <text x="362" y="174" font-size="13.5" font-weight="600" fill="#0b0b0b">raw.*</text>
+  <text x="362" y="192" font-size="12.5" fill="#52514e">every column as text, untouched</text>
+  <rect x="348" y="216" width="234" height="52" rx="7" fill="#f0efec"/>
+  <text x="362" y="238" font-size="13.5" font-weight="600" fill="#0b0b0b">staging.*</text>
+  <text x="362" y="256" font-size="12.5" fill="#52514e">typed, cleaned, channel classified</text>
+  <rect x="348" y="280" width="234" height="66" rx="7" fill="#f0efec"/>
+  <text x="362" y="302" font-size="13.5" font-weight="600" fill="#0b0b0b">intermediate.*</text>
+  <text x="362" y="320" font-size="12.5" fill="#52514e">identity: phone merge, cookie → person,</text>
+  <text x="362" y="336" font-size="12.5" fill="#52514e">one touchpoint table, 90-day deal window</text>
+  <rect x="348" y="358" width="234" height="52" rx="7" fill="#cde2fb"/>
+  <text x="362" y="380" font-size="13.5" font-weight="600" fill="#0b0b0b">marts.*</text>
+  <text x="362" y="398" font-size="12.5" fill="#52514e">attribution, channels, funnel, health</text>
+
+  <!-- column 3: attribution -->
+  <rect x="640" y="110" width="250" height="318" rx="10" fill="#fcfcfb" stroke="#e2e0d9"/>
+  <text x="658" y="136" font-size="11" font-weight="500" letter-spacing="1" fill="#7d7b74" font-family="'IBM Plex Mono', monospace">3 · CREDIT (5 MODELS)</text>
+  <g font-size="13.5" fill="#0b0b0b">
+    <text x="658" y="166">First touch</text>
+    <text x="658" y="192">Last non-direct</text>
+    <text x="658" y="218">Linear</text>
+    <text x="658" y="244">W-shaped (30 / 30 / 30 + 10)</text>
+    <text x="658" y="270">Time decay (7-day half-life)</text>
+  </g>
+  <line x1="658" y1="288" x2="872" y2="288" stroke="#e2e0d9"/>
+      <text x="658" y="312" font-size="12.5" fill="#52514e">Each deal hands out exactly 100%</text>
+  <text x="658" y="330" font-size="12.5" fill="#52514e">credit per model. A deal with no</text>
+  <text x="658" y="348" font-size="12.5" fill="#52514e">touch gets an "unattributed" row.</text>
+  <rect x="658" y="364" width="214" height="46" rx="7" fill="#f0efec"/>
+  <text x="672" y="384" font-size="12.5" font-weight="600" fill="#0b0b0b">Planted truth</text>
+  <text x="672" y="401" font-size="12" fill="#52514e">channel switched off × 12 worlds</text>
+
+  <!-- column 4: outputs -->
+  <rect x="930" y="110" width="270" height="318" rx="10" fill="#fcfcfb" stroke="#e2e0d9"/>
+  <text x="948" y="136" font-size="11" font-weight="500" letter-spacing="1" fill="#7d7b74" font-family="'IBM Plex Mono', monospace">4 · OUTPUTS</text>
+  <rect x="948" y="152" width="234" height="62" rx="7" fill="#f0efec"/>
+  <text x="962" y="174" font-size="13.5" font-weight="600" fill="#0b0b0b">Dashboard (GitHub Pages)</text>
+  <text x="962" y="192" font-size="12.5" fill="#52514e">overview · channels · model</text>
+  <text x="962" y="208" font-size="12.5" fill="#52514e">disagreement · systems · data health</text>
+  <rect x="948" y="226" width="234" height="62" rx="7" fill="#f0efec"/>
+  <text x="962" y="248" font-size="13.5" font-weight="600" fill="#0b0b0b">HubSpot company fields</text>
+  <text x="962" y="266" font-size="12.5" fill="#52514e">first touch · attributed pipeline</text>
+  <text x="962" y="282" font-size="12.5" fill="#52514e">source quality score</text>
+  <rect x="948" y="300" width="234" height="46" rx="7" fill="#f0efec"/>
+  <text x="962" y="322" font-size="13.5" font-weight="600" fill="#0b0b0b">Slack run summary</text>
+  <text x="962" y="339" font-size="12.5" fill="#52514e">success, failure, test counts</text>
+  <rect x="948" y="358" width="234" height="52" rx="7" fill="#f0efec"/>
+  <text x="962" y="380" font-size="12.5" font-weight="600" fill="#0b0b0b">ops.pipeline_runs / crm_writes</text>
+  <text x="962" y="398" font-size="12.5" fill="#52514e">every run + CRM write logged</text>
+
+  <!-- arrows between columns -->
+  <line x1="292" y1="269" x2="326" y2="269" stroke="#7d7b74" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="602" y1="269" x2="636" y2="269" stroke="#7d7b74" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="892" y1="269" x2="926" y2="269" stroke="#7d7b74" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- test gate -->
+  <rect x="40" y="462" width="1160" height="80" rx="10" fill="#fcfcfb" stroke="#0b0b0b" stroke-width="1.5"/>
+  <text x="64" y="492" font-size="11" font-weight="500" letter-spacing="1" fill="#7d7b74" font-family="'IBM Plex Mono', monospace">THE GATE · 75 TESTS RUN BEFORE ANYTHING IS PUBLISHED</text>
+  <g font-size="13.5" fill="#0b0b0b">
+    <text x="64" y="520">credit per deal = 1.0 under every model</text>
+    <text x="404" y="520">credited revenue reconciles to CRM won revenue</text>
+    <text x="800" y="520">no credit to a touch after the deal was created</text>
+  </g>
+  <text x="64" y="538" font-size="12.5" fill="#9a5b00">A failed test stops the run: the dashboard is not republished, nothing is written to HubSpot, and Slack gets the alert.</text>
+
+  <!-- nightly bar -->
+  <rect x="40" y="566" width="1160" height="62" rx="10" fill="#0b0b0b"/>
+  <text x="64" y="592" font-size="11" font-weight="500" letter-spacing="1" fill="#95948b" font-family="'IBM Plex Mono', monospace">NIGHTLY, UNATTENDED · GITHUB ACTIONS 02:00 IST</text>
+  <g font-size="13.5" fill="#fcfcfb" font-family="'IBM Plex Mono', monospace">
+    <text x="64" y="616">generate a new day</text>
+    <text x="250" y="616">→</text>
+    <text x="278" y="616">load raw</text>
+    <text x="392" y="616">→</text>
+    <text x="420" y="616">dbt build + test</text>
+    <text x="596" y="616">→</text>
+    <text x="624" y="616">build dashboard</text>
+    <text x="800" y="616">→</text>
+    <text x="828" y="616">sync HubSpot</text>
+    <text x="976" y="616">→</text>
+    <text x="1004" y="616">record run + alert</text>
+  </g>
+</svg>
