@@ -15,18 +15,15 @@ import sys
 import time
 import urllib.request
 from datetime import datetime, timezone
-from urllib.parse import urlparse, unquote
-
-import psycopg2
-
 ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, ROOT)
+from common.db import connect, parse_database_url  # noqa: E402
 
 
 def db_env(url: str) -> dict:
-    u = urlparse(url)
-    return {"SW_DB_HOST": u.hostname, "SW_DB_PORT": str(u.port or 5432), "SW_DB_USER": unquote(u.username or ""),
-            "SW_DB_PASSWORD": unquote(u.password or ""), "SW_DB_NAME": u.path.lstrip("/") or "postgres",
-            "SW_DB_SSLMODE": "require" if u.hostname not in ("localhost", "127.0.0.1") else "prefer"}
+    c = parse_database_url(url)
+    return {"SW_DB_HOST": c["host"], "SW_DB_PORT": str(c["port"]), "SW_DB_USER": c["user"],
+            "SW_DB_PASSWORD": c["password"], "SW_DB_NAME": c["dbname"], "SW_DB_SSLMODE": c["sslmode"]}
 
 
 def step(name, cmd, env, log):
@@ -52,7 +49,7 @@ def notify(text):
 
 
 def record_run(url, started, status, log, summary):
-    with psycopg2.connect(url) as conn, conn.cursor() as cur:
+    with connect(url) as conn, conn.cursor() as cur:
         cur.execute("""create schema if not exists ops;
                        create table if not exists ops.pipeline_runs (
                          run_id bigserial primary key, started_at timestamptz, finished_at timestamptz,
@@ -86,7 +83,7 @@ def main():
 
     status = "success" if ok else "failed"
     try:
-        with psycopg2.connect(url) as conn, conn.cursor() as cur:
+        with connect(url) as conn, conn.cursor() as cur:
             cur.execute("select count(*), count(*) filter (where is_won), coalesce(sum(amount) filter (where is_won), 0) from marts.fct_opportunities")
             summary["opps"], summary["won"], summary["won_revenue_usd"] = [float(x) for x in cur.fetchone()]
             cur.execute("select count(*) from marts.mart_data_quality where status = 'warn'")

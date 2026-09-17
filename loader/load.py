@@ -11,10 +11,11 @@ import os
 import sys
 import time
 
-import psycopg2
 from psycopg2 import sql
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+from common.db import connect  # noqa: E402
 
 
 def load_dir(cur, folder, schema):
@@ -54,7 +55,7 @@ def main():
     if not url:
         sys.exit("DATABASE_URL is not set")
     t0 = time.time()
-    with psycopg2.connect(url) as conn, conn.cursor() as cur:
+    with connect(url) as conn, conn.cursor() as cur:
         n = load_dir(cur, os.path.join(ROOT, "data", "raw"), "raw")
         load_dir(cur, os.path.join(ROOT, "data", "truth"), "truth")
     print(f"Loaded {n:,} raw rows in {time.time() - t0:.1f}s")
